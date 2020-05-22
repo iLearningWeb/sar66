@@ -38,6 +38,8 @@ h2 {
 @media screen and (max-width: 736px){
   h2{
     font-size: 3rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
   }
 }
 

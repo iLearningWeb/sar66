@@ -64,11 +64,11 @@
 @media screen and (max-width: 736px){
   .hud-prefix {
     text-align: center;
-    font-size: 1rem;
+    font-size: 2rem;
   }
   #progressBar {
-    width: 1rem;
-    height: 0.5rem;
+    width: 10rem;
+    height: 2rem;
     border: 0.1rem solid #56a5eb;
     margin-top: 0.5rem;
   }

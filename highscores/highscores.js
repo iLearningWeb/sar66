@@ -9,7 +9,10 @@ highScoresList.innerHTML = highScores.map(score => {
     return `<li class="high-score">${score.name}: ${score.score} - ${score.time}</li>`;
   }).join("");
 topicScore.innerHTML = topicScoreTable.map(score =>{
-  return `<tr><td>${score.topicName}:</td><td class="topic-score">${score.correct} / ${score.numQ}</td><td>${score.status}</td></tr>`
+  return `<tr><td class="topic-score">${score.topicName}:</td>
+              <td class="topic-score">${score.correct} / ${score.numQ}</td>
+              <td class="topic-score">${score.status}</td>
+          </tr>`
 }).join("");
 
 recentScore.innerText = (Number(mostRecentScore)/52*100).toPrecision(3) + "%";

@@ -23,7 +23,7 @@ let availableQuesions = [];
 //set your questions here
 let questions = [
   {section: "2.1 Matter",
-  question: "Matter can exist in which physical state(s):",
+  question: "Matter can be existed in which physical state(s):",
   choice1: "Solods, Liquids and Gaseous",
   choice2: "Neutron, Electron and Proton",
   choice3: "Paper, Stone and Scissors",

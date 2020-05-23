@@ -20,10 +20,11 @@
 
 @media screen and (max-width: 736px){
   .high-score {
-    font-size: 1.3rem;
+    font-size: 1rem;
     margin-bottom: 0.1rem;
-  }
+  };
   .topic-score {
     font-size: 1rem;
     margin-bottom: 0.1rem;
+  };
 }

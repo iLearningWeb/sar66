@@ -17,3 +17,13 @@
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
+
+@media screen and (max-width: 736px){
+  .high-score {
+    font-size: 1.3rem;
+    margin-bottom: 0.1rem;
+  }
+  .topic-score {
+    font-size: 1rem;
+    margin-bottom: 0.1rem;
+}

@@ -36,10 +36,19 @@ h2 {
 }
 
 @media screen and (max-width: 736px){
-  h2{
+  h1, h2{
     font-size: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-weight: 300;
+  }
+  table, td {
+    align-self: center;
+    font-size: 1rem;
+    text-align: left;
+    padding: 0rem 0;
+  }
+  td {
+    width: auto;
   }
 }
 

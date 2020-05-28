@@ -1,0 +1,423 @@
+const question = document.getElementById("question");
+const choices = Array.from(document.getElementsByClassName("choice-text"));
+const progressText = document.getElementById("progressText");
+const scoreText = document.getElementById("score");
+const progressBarFull = document.getElementById("progressBarFull");
+const quizname = document.getElementById("quizname");
+//mod here to match the SAR66 Topic content
+
+let currentQuestion = {};
+let acceptingAnswers = false;
+let score = 0;
+let questionCounter = 0;
+let availableQuesions = [];
+//set your questions here
+let questions = [
+  {question: "Aeroplane flying at which airspeed would produce the greatest induce drag?",
+  choice1: "180 knots",
+  choice2: "380 knots",
+  choice3: "540 knots",
+  answer: 1},
+  {question: "The layer of atmosphere in which the temperature remains almost constant:",
+  choice1: "Troposphere.",
+  choice2: "Tropopause.",
+  choice3: "Stratosphere.",
+  answer: 3},
+  {question: "Which one of the following factor affects the amount of lift on a wing?",
+  choice1: "Center of pressure",
+  choice2: "Air speed",
+  choice3: "Center of gravity",
+  answer: 2},
+  {question: "When an aerofoil is subject to airflow , the resultant aerodynamic force will act through air :",
+  choice1: "aerodynamic centre.",
+  choice2: "center of gravity.",
+  choice3: "centre of pressure.",
+  answer: 3},
+  {question: "Air consists mainly of:",
+  choice1: "Oxygen",
+  choice2: "Nitrogen",
+  choice3: "Carbon Dioxide",
+  answer: 2},
+  {question: "Form drag of an aerofoil depends on its:",
+  choice1: "shape.",
+  choice2: "temperature.",
+  choice3: "surface smoothness.",
+  answer: 1},
+  {question: "Entering a turn :",
+  choice1: "aileron movement gives the up-going wing increase camber.",
+  choice2: "aileron movement gives the up-going wing decrease camber.",
+  choice3: "aileron movement gives the down-going wing increase camber.",
+  answer: 1},
+  {question: "Increase in velocity of airflow will:",
+  choice1: "increase kinetic energy",
+  choice2: "increase potential energy",
+  choice3: "increase air pressure",
+  answer: 1},
+  {question: "As altitude increase , density of the air:",
+  choice1: "increase.",
+  choice2: "remains constant.",
+  choice3: "decrease.",
+  answer: 3},
+  {question: "At an altitude of 6000m ( about 20,000ft ) the pressure will be about:",
+  choice1: "one tenth of sea level pressure.",
+  choice2: "twice of sea level pressure.",
+  choice3: "half of sea level pressure.",
+  answer: 3},
+  {question: "The standard temperature lapse rate from sea level to approximately 30000 ft is :",
+  choice1: "1°C per 10,000 ft.",
+  choice2: "10°C per 100 ft.",
+  choice3: "2°C per 1000 ft.",
+  answer: 3},
+  {question: "As altitude increases, pressure and density",
+  choice1: "Both decrease",
+  choice2: "Pressure increase, density decrease",
+  choice3: "Pressure decrease, density increase",
+  answer: 1},
+  {question: "As the angle of attack of an aerofoil increase up to stalling angle , the lift:",
+  choice1: "remains constant.",
+  choice2: "increase.",
+  choice3: "decrease.",
+  answer: 2},
+  {question: "Density of the air:",
+  choice1: "Decreases when temperature lowers.",
+  choice2: "Is defined as mass per unit volume.",
+  choice3: "Has no effect on aircraft performance.",
+  answer: 2},
+  {question: "Induced drag may be reduced by:",
+  choice1: "streamlining the fuselage.",
+  choice2: "the use of a high aspect ratio wing.",
+  choice3: "increase the angle of attack.",
+  answer: 2},
+  {question: "When air flow over the upper surface of a wing:",
+  choice1: "Pressure increase and velocity decrease.",
+  choice2: "Pressure and velocity both decrease.",
+  choice3: "Pressure decrease and velocity increase.",
+  answer: 3},
+  {question: "Atmosphere pressure can be measured by the means of a :",
+  choice1: "hydrometer",
+  choice2: "manometer",
+  choice3: "barometer",
+  answer: 3},
+  {question: "Decreasing the aspect ratio of a wing will:",
+  choice1: "not affect the induced drag.",
+  choice2: "increase the induced drag.",
+  choice3: "reduce the induced drag.",
+  answer: 2},
+  {question: "International standard atmosphere sea level condition of temperature , pressure and density are approximately:",
+  choice1: "15°C, 1013 hPa and 1.225kg/m³.",
+  choice2: "15°C, 1000 hPa and 1.225kg/m³.",
+  choice3: "14°C, 1013 hPa and 12.25kg/m³.",
+  answer: 1},
+  {question: "The rearward force which opposes the forward motion of an aeroplan through air is",
+  choice1: "Thust",
+  choice2: "Reaction",
+  choice3: "Drag",
+  answer: 3},
+  {question: "Speeding up the movement of air increase its:",
+  choice1: "Potential energy.",
+  choice2: "Kinetic energy.",
+  choice3: "Pressure energy.",
+  answer: 2},
+  {question: "The angle of attack is the angle between the chord line of an aerofoil and the:",
+  choice1: "horizontal line.",
+  choice2: "fuselage centre line.",
+  choice3: "relative airflow",
+  answer: 3},
+  {question: "The average pressure at sea level due to the weight of the atmosphere is approximately:",
+  choice1: "10.1 kiloNewtons per metre squared.",
+  choice2: "101 kiloNewtons per metre squared.",
+  choice3: "1011 kiloNewtons per metre squared.",
+  answer: 2},
+  {question: "The proportional decrease in temperature as at altitude increase is called:",
+  choice1: "atmosphere lapse rate.",
+  choice2: "temperature lapse rate.",
+  choice3: "barometric lapse rate.",
+  answer: 2},
+  {question: "During a constant radius and constant altitude turn, an aircraft “G” meter is showing a steady 2G. Which of the following would be the aircraft’s angle of bank?",
+  choice1: "30 degrees",
+  choice2: "60 degrees",
+  choice3: "90 degrees",
+  answer: 2},
+  {question: "If the speed of an aeroplane was increased from 100kt to 200kt, the parasite drag would change by a factor of:",
+  choice1: "2.",
+  choice2: "4.",
+  choice3: "6.",
+  answer: 2},
+  {question: "Which of the following high lift devices will increase wing area?",
+  choice1: "Plain flap",
+  choice2: "Fowler flap",
+  choice3: "Split flap",
+  answer: 2},
+  {question: "If the pilot want to fly an aircraft straight and level but at faster speed, he would increase power and:",
+  choice1: "gradually lower the nose of the aeroplane to reduce the angle of attack.",
+  choice2: "lower the flaps to increase the camber of the wing.",
+  choice3: "pull the control column to raise the nose of the aeroplane.",
+  answer: 1},
+  {question: "At which of the following angles of attack would a general purpose aerofoil be expected to produce the best lift/drag ratio?",
+  choice1: "15 to 20 degrees",
+  choice2: "-4 to 0 degrees",
+  choice3: "3 to 4 degrees",
+  answer: 3},
+  {question: "At higher altitude, to maintain lift the airspeed must be,",
+  choice1: "decreased.",
+  choice2: "increased.",
+  choice3: "unchanged.",
+  answer: 2},
+  {question: "What is the sea level temperature?",
+  choice1: "15 degrees",
+  choice2: "17 degrees",
+  choice3: "20 degrees",
+  answer: 1},
+  {question: "The point on the upper surface of a wing where the thin “laminar” boundary layer changes to a thicker “turbulent” boundary layer is known as the:",
+  choice1: "gurgle point.",
+  choice2: "separation point.",
+  choice3: "transition point.",
+  answer: 3},
+  {question: "To increase altitude during a level flight, the pilot must:",
+  choice1: "increase TAS at a given angle of attack.",
+  choice2: "increase TAS regardless of angle of attack.",
+  choice3: "Maintain the TAS at a given angle of attack.",
+  answer: 1},
+  {question: "The centre of lift is located at the aft of weight so that:",
+  choice1: "aircraft has nose heavy tendency.",
+  choice2: "to improve longitudinal stability.",
+  choice3: "aircraft has tail heave tendency.",
+  answer: 1},
+  {question: "At sea level, International Standard Atmosphere (ISA) temperature:",
+  choice1: "15oF, 59oC",
+  choice2: "15oC, 59oF",
+  choice3: "20oC, 44oF",
+  answer: 2},
+  {question: "The tendency of an aircraft to restore back to original position after it has been disturbed from condition of steady flight, it is said to have both static and dynamic:",
+  choice1: "stability",
+  choice2: "controllability",
+  choice3: "balance",
+  answer: 1},
+  {question: "With an increase in angle of attack during normal flight, the centre of pressure will:",
+  choice1: "remains constant.",
+  choice2: "move back.",
+  choice3: "move forward.",
+  answer: 3},
+  {question: "Angle of incidence is the acute angle of",
+  choice1: "a line parallel to the chord line and a line parallel to the longitudinal axis.",
+  choice2: "a line parallel between both wingtips and the line parallel to the lateral axis.",
+  choice3: "a line parallel from root to tip and the line parallel to the lateral axis.",
+  answer: 1},
+  {question: "When an aircraft is flying straight and level at constant speed. Which of the statements is true?",
+  choice1: "Weight of the aircraft is pointing to the centre of earth.",
+  choice2: "Thrust is always below the drag, thrust is more than drag.",
+  choice3: "Lift is always behind the weight, lift is more than weight.",
+  answer: 1},
+  {question: "An ideal disposition in considering the equilibrium of the four main forces acting on a conventional aircraft is to arrange them in the following manner:",
+  choice1: "line of lift is behind the weight, thrust is below the drag.",
+  choice2: "line of lift is in front of the weight, thrust is below the drag.",
+  choice3: "line of lift is in front of the weight, thrust is above the drag.",
+  answer: 1},
+  {question: "Lateral stability is achieved by:",
+  choice1: "wing dihedral.",
+  choice2: "taper from the fuselage end to the tip of the wing.",
+  choice3: "wash-out.",
+  answer: 1},
+  {question: "If the aircraft nose remains at the new position after the elevator is pressed forward and released, it displays:",
+  choice1: "neutral static stability.",
+  choice2: "positive static stability.",
+  choice3: "negative static stability.",
+  answer: 1},
+  {question: "Temperature decreases constantly with altitude below sea-level to:",
+  choice1: "5000m.",
+  choice2: "11000m.",
+  choice3: "30000m.",
+  answer: 2},
+  {question: "When angle of attack increased, projected frontal area of wing increases, this will:",
+  choice1: "increase induce drag.",
+  choice2: "increase form drag.",
+  choice3: "decrease form drag.",
+  answer: 2},
+  {question: "The control column is initially pressed forward and released, the aircraft shows tendency to return its original position, the aircraft displays:",
+  choice1: "positive static stability.",
+  choice2: "neutral static stability.",
+  choice3: "positive dynamic stability.",
+  answer: 1},
+  {question: "What are the four forces acting on an aircraft?",
+  choice1: "Lift, thrust, weight and drag.",
+  choice2: "Power, velocity, gravity and drag.",
+  choice3: "Force, lift, density and weight.",
+  answer: 1},
+  {question: "To maintain aircraft at straight and level flight with reduced speed.",
+  choice1: "Angle of attack must be increased.",
+  choice2: "Angle of attack must be decreased.",
+  choice3: "Angle of attack must be changed.",
+  answer: 1},
+  {question: "The tailplane of an aeroplane has the greatest effect on:",
+  choice1: "lateral stability.",
+  choice2: "longitudinal stability.",
+  choice3: "directional stability.",
+  answer: 2},
+  {question: "In which phase of flight is the highest coefficient of lift experienced?",
+  choice1: "Final approach and landing",
+  choice2: "Take-off and climb",
+  choice3: "Turns and manoeuvres",
+  answer: 2},
+  {question: "If the wing area is doubled and all other factors remain the same, the lift and drag created by the wing will change by a factor of:",
+  choice1: "2.",
+  choice2: "4.",
+  choice3: "0.5.",
+  answer: 3},
+  {question: "The stability of an aircraft refers to its ability to:",
+  choice1: "provide a smooth flight for the passengers.",
+  choice2: "return to a particular condition of flight without any effort from the pilot.",
+  choice3: "perform aerobatic manoeuvers easily.",
+  answer: 2},
+  {question: "An aeroplane that flies with one wing lower than the other and returns to the same attitude after being disturbed is:",
+  choice1: "out of trim.",
+  choice2: "neutrally unstable.",
+  choice3: "directionally unstable.",
+  answer: 2},
+  {question: "On an aerofoil section, the centre of pressure is the position:",
+  choice1: "of maximum lift fixed at 50% of the chord.",
+  choice2: "on the upper surface where the average pressure drop is evident.",
+  choice3: "where the total distributed pressure could be replaced by a single resultant force.",
+  answer: 3},
+  {question: "Stability about the lateral axis is called:",
+  choice1: "longitudinal stability.",
+  choice2: "horizontal stability.",
+  choice3: "spiral stability.",
+  answer: 1},
+  {question: "An aircraft which, when disturbed, remains in its new position is said to be:",
+  choice1: "dynamically unstable.",
+  choice2: "laterally stable.",
+  choice3: "neutrally stable.",
+  answer: 3},
+  {question: "On an ISA day, what would be the sea level ambient pressure in the metric system?",
+  choice1: "1015.5mb",
+  choice2: "1010.3mb",
+  choice3: "1013.2mb",
+  answer: 3},
+  {question: "On a humid day, an aircraft will require:",
+  choice1: "a longer take-off roll.",
+  choice2: "a shorter take-off roll.",
+  choice3: "less power on take-roll because of the cooling effects of water vapour in the air.",
+  answer: 1},
+  {question: "The different between induced drag and parasite drag is that:",
+  choice1: "induced drag is created by skin friction while parasite drag is created by exposed airframe parts.",
+  choice2: "parasite drag increases as airspeed increases while induced drag decreases as airspeed increases.",
+  choice3: "parasite drag causes wing tip vortices while induced drag causes a turbulent boundary layer.",
+  answer: 2},
+  {question: "When an aircraft is flying straight and level at constant speed, the forces acting on it are:",
+  choice1: "in equilibrium, with lift equal to weight and thrust equal to drag.",
+  choice2: "in equilibrium, with lift, weight, thrust and drag all equal.",
+  choice3: "unbalanced, with lift and thrust being greater than weight and drag.",
+  answer: 1},
+  {question: "A pressure of 150 PSIG expressed as an absolute pressure is:",
+  choice1: "150 PSI absolute.",
+  choice2: "135.3 PSI absolute.",
+  choice3: "164.7 PSI absolute.",
+  answer: 3},
+  {question: "As air density increases,",
+  choice1: "lift increases, drag decreases.",
+  choice2: "both lift and drag increases.",
+  choice3: "drag increases, lift decreases.",
+  answer: 2},
+  {question: "During the take-off roll, the thrust produced by the engines:",
+  choice1: "is always more than the lift produced by the wings.",
+  choice2: "is greater than the drag.",
+  choice3: "equals to weight of the aeroplane.",
+  answer: 2},
+  {question: "The best lift/drag ratio occurs in which phase of flight?",
+  choice1: "Take-off",
+  choice2: "Cruise",
+  choice3: "Approach",
+  answer: 2},
+  {question: "A highly cambered aerofoil produces:",
+  choice1: "low lift and low drag.",
+  choice2: "high lift and high drag.",
+  choice3: "high lift and low drag.",
+  answer: 2},
+  {question: "The effect of streaming a body is to reduce its:",
+  choice1: "form drag.",
+  choice2: "induced drag.",
+  choice3: "skin friction drag.",
+  answer: 1},
+  {question: "An aerofoil stalls when the angle of attack is nearly equal to:",
+  choice1: "4 degrees.",
+  choice2: "20 degrees.",
+  choice3: "15 degrees.",
+  answer: 3},
+  {question: "The lift produced by a wing can be increased by:",
+  choice1: "reducing the angle of attack.",
+  choice2: "increasing the camber.",
+  choice3: "reducing the surface area.",
+  answer: 2},
+  {question: "When air strikes the aerofoil at an angle, the high velocity of air over the upper surface creates:",
+  choice1: "increased pressure on both upper and lower surfaces.",
+  choice2: "low pressure.",
+  choice3: "high pressure.",
+  answer: 2},
+];
+
+//CONSTANTS
+const CORRECT_BONUS = 1;
+const MAX_QUESTIONS = 20; //For CAT B2, total number of questions is 52.
+
+startGame = () => {
+  questionCounter = 0;
+  score = 0;
+  //SAR66 each topic scores
+  localStorage.setItem("maxMark", MAX_QUESTIONS);
+  availableQuesions = [...questions];
+  quizname.innerText = `M7: Maintenance`;
+  getNewQuestion();
+};
+
+getNewQuestion = () => {
+  if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
+    localStorage.setItem("mostRecentScore", score);
+    //Generating the topic results
+    //go to the end page
+    return window.location.assign("../end.html");
+  }
+  questionCounter++;
+  progressText.innerText = `Question ${questionCounter}/${MAX_QUESTIONS}`;
+  //Update the progress bar
+  progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
+
+  const questionIndex = Math.floor(Math.random() * availableQuesions.length);
+  currentQuestion = availableQuesions[questionIndex];
+  question.innerText = currentQuestion.question;
+
+  choices.forEach(choice => {
+    const number = choice.dataset["number"];
+    choice.innerText = currentQuestion["choice" + number];
+  });
+
+  availableQuesions.splice(questionIndex, 1);
+  acceptingAnswers = true;
+};
+
+choices.forEach(choice => {
+  choice.addEventListener("click", e => {
+    if (!acceptingAnswers) return;
+
+    acceptingAnswers = false;
+    const selectedChoice = e.target;
+    const selectedAnswer = selectedChoice.dataset["number"];
+
+    const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
+
+    if (classToApply === "correct") {incrementScore(CORRECT_BONUS);};
+
+    selectedChoice.parentElement.classList.add(classToApply);
+
+    setTimeout(() => {
+      selectedChoice.parentElement.classList.remove(classToApply);
+      getNewQuestion();
+    }, 1000);
+  });
+});
+
+incrementScore = num => {
+  score += num;
+  scoreText.innerText = score;
+};
+
+startGame();

@@ -768,7 +768,7 @@ startGame = () => {
   questionCounter = 0;
   score = 0;
   //SAR66 each topic scores
-
+  localStorage.setItem("maxMark", MAX_QUESTIONS);
   availableQuesions = [...questions];
   quizname.innerText = `M3: Electrical`;
   getNewQuestion();
